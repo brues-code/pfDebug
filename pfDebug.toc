@@ -1,10 +1,19 @@
 ## Interface: 11200
 ## Title: |cff33ffccpf|cffffffffDebug
 ## Author: Shagu
-## Notes: A little tool to monitor the memory usage, peaks and garbage collection.
-## Version: 0.1
+## Notes: Profiles the Lua memory, garbage and CPU time of addons, frames, events and globals.
+## Version: 0.2
+## Dependencies: !!!ClassicAPI
 ## OptionalDeps: pfUI
+## SavedVariables: pfDebugDB
 
-# main
-pfDebug.lua
-analyzer.lua
+pfDebug.xml
+core.lua
+track.lua
+widget.lua
+window.lua
+tabs\addons.lua
+tabs\frames.lua
+tabs\events.lua
+tabs\globals.lua
+fstack.lua
