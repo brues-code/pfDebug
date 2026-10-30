@@ -41,10 +41,10 @@ local cpu = AddLine("Lua CPU")
 local topMem = AddLine("Top Alloc")
 local topCpu = AddLine("Top CPU")
 
--- the largest allocation in a tenth of a second, fading out
+-- the largest allocation in a tenth of a second, draining over 5 seconds
+local DRAIN = .1 / 5
 local bar = CreateFrame("StatusBar", nil, widget)
-bar:SetStatusBarTexture("Interface\\BUTTONS\\WHITE8X8")
-bar:SetStatusBarColor(1, .3, .3, 1)
+bar:SetColorFill(1, .3, .3)
 bar:SetPoint("BOTTOMLEFT", 1, 1)
 bar:SetPoint("BOTTOMRIGHT", -1, 1)
 bar:SetHeight(18)
@@ -56,25 +56,28 @@ barText:SetPoint("LEFT", 4, 0)
 
 widget:SetHeight(#lines * LINE_HEIGHT + 8 + 20)
 
-local lastMem, peakElapsed = gcinfo(), 0
+-- lastMem is taken on the first tick while shown, so the growth while hidden
+-- or while the other addons load never counts as a peak
+local lastMem, peakElapsed = nil, 0
+widget:SetScript("OnHide", function() lastMem = nil end)
 widget:SetScript("OnUpdate", function(self, elapsed)
   peakElapsed = peakElapsed + elapsed
   if peakElapsed < .1 then return end
   peakElapsed = 0
 
   local mem = gcinfo()
-  local grown = mem - lastMem
+  local grown = lastMem and mem - lastMem or 0
   lastMem = mem
 
-  local value = bar:GetValue()
+  local value, peak = bar:GetValue(), select(2, bar:GetMinMaxValues())
   if grown > value then
     bar:SetMinMaxValues(0, grown)
     bar:SetValue(grown)
     barText:SetText(ns.ACCENT .. "Last Peak (100ms):|r " .. grown .. ns.GREY .. " KB")
   else
-    bar:SetValue(max(value - .5, 0))
+    bar:SetValue(max(value - peak * DRAIN, 0))
   end
-  bar:SetStatusBarColor(1, .3, .3, min(bar:GetValue() / 10, 1))
+  bar:SetColorFill(1, .3, .3, min(bar:GetValue() / 10, 1))
 end)
 
 local function Unit(value, unit)

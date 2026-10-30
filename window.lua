@@ -150,7 +150,6 @@ local function InitRow(list, row, entry)
 
     row.bar = CreateFrame("StatusBar", nil, row)
     row.bar:SetAllPoints()
-    row.bar:SetStatusBarTexture(WHITE8X8)
     row.bar:SetMinMaxValues(0, 1)
 
     row.cells = {}
@@ -173,8 +172,8 @@ local function InitRow(list, row, entry)
   local v = value and value(entry)
   local perc = type(v) == "number" and list.maxValue > 0 and max(v, 0) / list.maxValue or 0
   local r, g, b = Gradient(perc)
+  row.bar:SetColorFill(r, g, b, .2)
   row.bar:SetValue(perc)
-  row.bar:SetStatusBarColor(r, g, b, .2)
 
   if GameTooltip:IsOwned(row) then RowOnEnter(row) end
 end

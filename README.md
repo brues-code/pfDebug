@@ -11,7 +11,8 @@ frame, event and global function. It needs
 The widget shows the Lua memory, the allocation rate, the last garbage
 collection, the frame rate, the Lua CPU time per second, and the addons that
 allocate the most memory and use the most CPU. The bar shows the largest
-allocation in a tenth of a second.
+allocation in a tenth of a second. It drains in 5 seconds, and then the next
+allocation becomes the new peak.
 
 - Left-click: reset the peak bar
 - Right-click: open the analyzer
